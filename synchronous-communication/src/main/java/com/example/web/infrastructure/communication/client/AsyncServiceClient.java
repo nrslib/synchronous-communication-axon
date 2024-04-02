@@ -14,9 +14,13 @@ public record AsyncServiceClient(
     }
 
     public List<DummyControlDataModel> receive() {
+        return receive(true);
+    }
+
+    public List<DummyControlDataModel> receive(boolean pooling) {
         var dataList = dummyControlRepository.findAll();
 
-        if (dataList.size() < 3) {
+        if (pooling && dataList.size() < 3) {
             return List.of();
         }
 
