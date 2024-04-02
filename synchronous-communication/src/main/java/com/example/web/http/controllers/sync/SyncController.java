@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,11 +27,13 @@ public record SyncController(
         CommandGateway commandGateway,
         QueryGateway queryGateway
 ) {
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(SyncController.class);
+
     @Operation(summary = "Test.")
     @PostMapping
     public Mono<SyncPostResponse> post() {
         var requestId = UUID.randomUUID();
-        System.out.println(requestId);
+        logger.info("Request ID: {}", requestId);
 
         var query = new FindAsyncResponse(requestId);
         var result = queryGateway.subscriptionQuery(query, ResponseTypes.instanceOf(FindAsyncResponseResult.class), ResponseTypes.instanceOf(FindAsyncResponseResult.class));
